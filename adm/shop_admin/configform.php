@@ -27,7 +27,7 @@ $pg_anchor = '<ul class="anchor">
 </ul>';
 
 $frm_submit = '<div class="btn_confirm01 btn_confirm">
-    <input type="submit" value="확인" class="btn_submit" accesskey="s">
+    <input type="submit" value="확인" class="tag_submit btn_submit" accesskey="s">
     <a href="'.G5_SHOP_URL.'">쇼핑몰</a>
 </div>';
 
@@ -1042,6 +1042,60 @@ if(!isset($default['de_listtype_list_skin'])) {
             <col>
         </colgroup>
         <tbody>
+        <tr>
+            <th scope="row">태그상품출력</th>
+            <td>
+                <?php echo help("이미지높이를 0으로 설정하면 상품이미지를 이미지폭에 비례하여 생성합니다."); ?>
+                <label for="de_tag_skin">스킨</label>
+                <select name="de_tag_skin" id="de_tag_skin">
+                    <?php echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_SHOP_SKIN_PATH, $default['de_tag_skin']); ?>
+                </select>
+                <label for="de_tag_width">이미지폭</label>
+                <input type="text" name="de_tag_width" value="<?php echo $default['de_tag_width']; ?>" id="de_tag_width" class="frm_input" size="3">
+                <label for="de_tag_height">이미지높이</label>
+                <input type="text" name="de_tag_height" value="<?php echo $default['de_tag_height']; ?>" id="de_tag_height" class="frm_input" size="3">
+                <label for="de_tag_mod">1줄당 이미지 수</label>
+                <input type="text" name="de_tag_mod" value="<?php echo $default['de_tag_mod']; ?>" id="de_tag_mod" class="frm_input" size="3">
+                <label for="de_tag_row">출력할 줄 수</label>
+                <input type="text" name="de_tag_row" value="<?php echo $default['de_tag_row']; ?>" id="de_tag_row" class="frm_input" size="3">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">모바일 태그상품출력</th>
+            <td>
+                <?php echo help("이미지높이를 0으로 설정하면 상품이미지를 이미지폭에 비례하여 생성합니다."); ?>
+                <label for="de_tag_mobile_skin">스킨</label>
+                <select name="de_tag_mobile_skin" id="de_tag_mobile_skin">
+                    <?php echo get_list_skin_options("^list.[0-9]+\.skin\.php", G5_SHOP_SKIN_PATH, $default['de_tag_mobile_skin']); ?>
+                </select>
+                <label for="de_tag_mobile_width">이미지폭</label>
+                <input type="text" name="de_tag_mobile_width" value="<?php echo $default['de_tag_mobile_width']; ?>" id="de_tag_mobile_width" class="frm_input" size="3">
+                <label for="de_tag_mobile_height">이미지높이</label>
+                <input type="text" name="de_tag_mobile_height" value="<?php echo $default['de_tag_mobile_height']; ?>" id="de_tag_mobile_height" class="frm_input" size="3">
+                <label for="de_tag_mobile_mod">1줄당 이미지 수</label>
+                <input type="text" name="de_tag_mobile_mod" value="<?php echo $default['de_tag_mobile_mod']; ?>" id="de_tag_mobile_mod" class="frm_input" size="3">
+                <label for="de_tag_mobile_row">출력할 줄 수</label>
+                <input type="text" name="de_tag_mobile_row" value="<?php echo $default['de_tag_mobile_row']; ?>" id="de_tag_mobile_row" class="frm_input" size="3">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="de_tag_pc">PC 태그</label></th>
+            <td>
+                <?php echo help('메인메뉴 아래쪽에 표시될 태그를 입력해주십시오.'); ?>
+                <ul class="co_tags" data-name="de_tag_pc">
+                    <?php echo input_tags($default['de_tag_pc']); ?>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="de_tag_mobile">모바일 태그</label></th>
+            <td>
+                <?php echo help('모바일 전체보기에서 표시할 태그를 입력해주십시오.'); ?>
+                <ul class="co_tags" data-name="de_tag_mobile">
+                    <?php echo input_tags($default['de_tag_mobile']); ?>
+                </ul>
+            </td>
+        </tr>
         <tr>
             <th scope="row">관련상품출력</th>
             <td>

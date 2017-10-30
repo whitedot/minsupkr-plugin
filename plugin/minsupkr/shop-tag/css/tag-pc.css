@@ -1,0 +1,14 @@
+@charset "utf-8";
+
+/* PC 태그 스타일 */
+.co-tag {word-break:break-word}
+.co-tag .item {}
+.co-tag .a {display:inline-block;margin:0 4px 2px 0;color:#0096ff}
+
+#tagall {line-height:2em}
+
+#tagbox {padding:0 0 5px}
+
+#taglist {padding:10px 0}
+
+#tagitem {padding:30px 0 10px}

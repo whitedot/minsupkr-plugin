@@ -310,6 +310,11 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_CSS_URL.'/style.css">', 0
             <?php } ?>
         </div>
 
+        <?php
+        // 상품태그
+        if ($it['it_tag']) include_once(G5_PLUGIN_PATH.'/minsupkr/shop-tag/boxitem.php');
+        ?>
+
         <script>
         // 상품보관
         function item_wish(f, it_id)

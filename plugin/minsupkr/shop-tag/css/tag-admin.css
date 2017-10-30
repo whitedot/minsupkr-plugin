@@ -1,0 +1,5 @@
+@charset "utf-8";
+
+/* 관리자 상품태그 */
+#tag_list {margin:0 20px}
+#tag_list .item {float:left;padding:5px 0;width:10%}

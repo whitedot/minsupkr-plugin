@@ -97,6 +97,8 @@ include_once(G5_LIB_PATH.'/latest.lib.php');
 
         <?php include_once(G5_SHOP_SKIN_PATH.'/boxcategory.skin.php'); // 상품분류 ?>
 
+        <?php if ($default['de_tag_pc']) include_once(G5_PLUGIN_PATH.'/minsupkr/shop-tag/boxtag.php'); // 상품태그 ?>
+
         <?php include_once(G5_SHOP_SKIN_PATH.'/boxcart.skin.php'); // 장바구니 ?>
 
         <?php include_once(G5_SHOP_SKIN_PATH.'/boxwish.skin.php'); // 위시리스트 ?>

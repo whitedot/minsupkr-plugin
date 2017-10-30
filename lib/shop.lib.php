@@ -117,6 +117,10 @@ class item_list
         $this->count++;
     }
 
+    function set_tag($tag) {
+        $this->tag = $tag;
+    }
+
     function set_type($type) {
         $this->type = $type;
         if ($type) {
@@ -266,6 +270,10 @@ class item_list
             $where = array();
             if ($this->use) {
                 $where[] = " it_use = '1' ";
+            }
+
+            if ($this->tag) {
+                $where[] = " ( it_tag like '%{$this->tag},%' ) ";
             }
 
             if ($this->type) {

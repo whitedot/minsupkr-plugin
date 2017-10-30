@@ -85,7 +85,7 @@ if ($w == 'u') $pg_anchor .= '<li><a href="#frm_etc">기타설정</a></li>';
 $pg_anchor .= '</ul>';
 
 $frm_submit = '<div class="btn_confirm01 btn_confirm">
-    <input type="submit" value="확인" class="btn_submit" accesskey="s">
+    <input type="submit" value="확인" class="tag_submit btn_submit" accesskey="s">
     <a href="./categorylist.php?'.$qstr.'">목록</a>
 </div>';
 
@@ -178,6 +178,20 @@ else {
             <th scope="row"><label for="ca_name">분류명</label></th>
             <td><input type="text" name="ca_name" value="<?php echo $ca['ca_name']; ?>" id="ca_name" size="38" required class="required frm_input"></td>
         </tr>
+        <?php
+        // 1단계 카테고리에만 적용
+        if (!$ca_id || (strlen($ca_id) == 2 && !$subid)) {
+        ?>
+        <tr>
+            <th scope="row">분류태그</th>
+            <td>
+                <?php echo help("메인메뉴에 표시될 태그를 입력해주십시오."); ?>
+                <ul class="co_tags" data-name="ca_tag">
+                    <?php echo input_tags($ca['ca_tag']); ?>
+                </ul>
+            </td>
+        </tr>
+        <?php } ?>
         <tr>
             <th scope="row"><label for="ca_order">출력순서</label></th>
             <td>

@@ -114,6 +114,9 @@ function get_mshop_category($ca_id, $len)
             echo '<p>등록된 분류가 없습니다.</p>'.PHP_EOL;
         ?>
         <button type="button" class="pop_close"><span class="sound_only">카테고리 </span>닫기</button>
+
+        <?php if ($default['de_tag_mobile']) include_once(G5_PLUGIN_PATH.'/minsupkr/shop-tag/boxtag.php'); // 상품태그 ?>
+
     </div>
 </div>
 
