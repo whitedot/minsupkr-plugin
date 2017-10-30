@@ -9,6 +9,11 @@ else if($ev_id)
 else if($tag)
     $sct_sort_href .= 'tag='.$tag;
 
+if ($costf)
+    $sct_sort_href .= '&amp;costf='.$costf;
+if ($costt)
+    $sct_sort_href .= '&amp;costt='.$costt;
+
 if($skin)
     $sct_sort_href .= '&amp;skin='.$skin;
 $sct_sort_href .= '&amp;sort=';

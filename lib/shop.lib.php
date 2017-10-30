@@ -121,6 +121,16 @@ class item_list
         $this->tag = $tag;
     }
 
+    // 검색 하한가
+    function set_costf($costf) {
+        $this->costf = $costf;
+    }
+
+    // 검색 상한가
+    function set_costt($costt) {
+        $this->costt = $costt;
+    }
+
     function set_type($type) {
         $this->type = $type;
         if ($type) {
@@ -308,6 +318,16 @@ class item_list
             }
             $sql_where = " where " . implode(" and ", $where);
             $sql_limit = " limit " . $this->from_record . " , " . ($this->list_mod * $this->list_row);
+
+            // 검색 하한가나 상한가가 있을 때
+            if ($this->costf || $this->costt) {
+                if ($this->costf && !$this->costt) // 하한가만 있을 때
+                    $sql_where .= " and it_price >= '{$this->costf}' ";
+                if (!$this->costf && $this->costt) // 상한가만 있을 때
+                    $sql_where .= " and it_price <= '{$this->costt}' ";
+                if ($this->costf && $this->costt) // 하한가, 상한가 둘 다 있을 때
+                    $sql_where .= " and it_price between '{$this->costf}' and '{$this->costt}' ";
+            }
 
             $sql = $sql_select . $sql_common . $sql_where . $sql_order . $sql_limit;
             $result = sql_query($sql);
