@@ -3,9 +3,22 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_CSS_URL.'/style.css">', 0);
+
+$pstr = 'ca_id='.$_GET['ca_id'].'&amp;sort='.$sort.'&amp;sortodr='.$sortodr;
 ?>
 
 <!-- 상품진열 10 시작 { -->
+<div class="sct-tofrom">
+    <span class="tit">가격검색</span>
+    <a href="<?php echo $_SERVER['PHP_SELF'].'?'.$pstr; ?>" class="a">전체상품</a>
+    <a href="<?php echo $_SERVER['PHP_SELF'].'?'.$pstr.'&amp;costf=0&amp;costt=100000'; ?>" class="a">0 ~ 10만원</a>
+    <a href="<?php echo $_SERVER['PHP_SELF'].'?'.$pstr.'&amp;costf=100001&amp;costt=200000'; ?>" class="a">10 ~ 20만원</a>
+    <a href="<?php echo $_SERVER['PHP_SELF'].'?'.$pstr.'&amp;costf=200001&amp;costt=300000'; ?>" class="a">20 ~ 30만원</a>
+    <a href="<?php echo $_SERVER['PHP_SELF'].'?'.$pstr.'&amp;costf=300001&amp;costt=400000'; ?>" class="a">30 ~ 40만원</a>
+    <a href="<?php echo $_SERVER['PHP_SELF'].'?'.$pstr.'&amp;costf=400001&amp;costt=500000'; ?>" class="a">40 ~ 50만원</a>
+    <a href="<?php echo $_SERVER['PHP_SELF'].'?'.$pstr.'&amp;costf=500001'; ?>" class="a">50만원 이상</a>
+</div>
+
 <?php
 for ($i=1; $row=sql_fetch_array($result); $i++) {
     if ($this->list_mod >= 2) { // 1줄 이미지 : 2개 이상

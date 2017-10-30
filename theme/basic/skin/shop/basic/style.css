@@ -575,3 +575,9 @@
 .couponzone_list ul li .coupon_btn .disabled {background: #ddd;border:1px;color:#999;border-color:#ddd}
 .couponzone_list .no_coupon{padding: 100px 0;text-align:center;color:#999}
 #point_coupon li{height:230px;}
+
+/* 상품목록 가격대별 검색 */
+.sct-tofrom {position:relative;margin:0 0 10px;font-size:0.95em;text-align:right;letter-spacing:-4px}
+.sct-tofrom .tit {display:inline-block;margin:0 10px 0 0;font-weight:bold;letter-spacing:-0.1em}
+.sct-tofrom .a {display:inline-block;position:relative;margin:0 0 0 -1px;padding:5px;border:1px solid #e4e4e4;background:#fff;letter-spacing:0}
+.sct-tofrom .a:hover {color:#eb0009}

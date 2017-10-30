@@ -6,6 +6,12 @@ if($ca_id)
     $sct_sort_href .= 'ca_id='.$ca_id;
 else if($ev_id)
     $sct_sort_href .= 'ev_id='.$ev_id;
+
+if ($costf)
+    $sct_sort_href .= '&amp;costf='.$costf;
+if ($costt)
+    $sct_sort_href .= '&amp;costt='.$costt;
+
 if($skin)
     $sct_sort_href .= '&amp;skin='.$skin;
 $sct_sort_href .= '&amp;sort=';

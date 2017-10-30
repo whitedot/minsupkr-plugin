@@ -114,6 +114,9 @@ var itemlist_ca_id = "<?php echo $ca_id; ?>";
         // 시작 레코드 구함
         $from_record = ($page - 1) * $items;
 
+        $costf = isset($_GET['costf']) ? preg_replace('/[^0-9]/', '', trim($_GET['costf'])) : ''; // 검색 하한가
+        $costt = isset($_GET['costt']) ? preg_replace('/[^0-9]/', '', trim($_GET['costt'])) : ''; // 검색 상한가
+
         $list = new item_list($skin_file, $ca['ca_list_mod'], $ca['ca_list_row'], $ca['ca_img_width'], $ca['ca_img_height']);
         $list->set_category($ca['ca_id'], 1);
         $list->set_category($ca['ca_id'], 2);
@@ -129,6 +132,8 @@ var itemlist_ca_id = "<?php echo $ca_id; ?>";
         $list->set_view('it_price', true);
         $list->set_view('it_icon', true);
         $list->set_view('sns', true);
+        if ($costf) $list->set_costf($costf); // 검색 하한가
+        if ($costt) $list->set_costt($costt); // 검색 상한가
         echo $list->run();
 
         // where 된 전체 상품수
@@ -145,6 +150,7 @@ var itemlist_ca_id = "<?php echo $ca_id; ?>";
     <?php
     $qstr1 .= 'ca_id='.$ca_id;
     $qstr1 .='&amp;sort='.$sort.'&amp;sortodr='.$sortodr;
+    if ($costf || $costt) $qstr1 .= '&amp;costf='.$costf.'&amp;costt='.$costt; // 검색 하한가, 상한가 _GET
     echo get_paging($config['cf_write_pages'], $page, $total_page, $_SERVER['SCRIPT_NAME'].'?'.$qstr1.'&amp;page=');
     ?>
 
