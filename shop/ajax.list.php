@@ -48,9 +48,6 @@ $from_record = ($page - 1) * $items;
 
 ob_start();
 
-$costf = isset($_GET['costf']) ? preg_replace('/[^0-9]/', '', trim($_GET['costf'])) : ''; // 검색 하한가
-$costt = isset($_GET['costt']) ? preg_replace('/[^0-9]/', '', trim($_GET['costt'])) : ''; // 검색 상한가
-
 $list = new item_list($skin_file, $ca['ca_mobile_list_mod'], $ca['ca_mobile_list_row'], $ca['ca_mobile_img_width'], $ca['ca_mobile_img_height']);
 $list->set_category($ca['ca_id'], 1);
 $list->set_category($ca['ca_id'], 2);
@@ -63,8 +60,6 @@ $list->set_view('it_img', true);
 $list->set_view('it_id', false);
 $list->set_view('it_name', true);
 $list->set_view('it_price', true);
-if ($costf) $list->set_costf($costf); // 검색 하한가
-if ($costt) $list->set_costt($costt); // 검색 상한가
 echo $list->run();
 
 $content = ob_get_contents();
