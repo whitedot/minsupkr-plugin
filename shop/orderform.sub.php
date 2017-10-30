@@ -49,6 +49,7 @@ if($is_kakaopay_use) {
                         a.ct_status,
                         a.ct_send_cost,
                         a.it_sc_type,
+                        a.it_auth,
                         b.ca_id,
                         b.ca_id2,
                         b.ca_id3,
@@ -171,6 +172,16 @@ if($is_kakaopay_use) {
 
                 if($sendcost == 0)
                     $ct_send_cost = '무료';
+            }
+
+            // 상품 구매가능 회원 검사
+            if ($row['it_auth']) {
+                $auth_msg = '주문 불가능한 상품이 포함되어 있습니다.';
+                if (!$is_member) alert($auth_msg, G5_URL);
+                else {
+                    $auth_check = get_item_auth($member['mb_id'], $row['it_auth']);
+                    if ($auth_check == false) alert($auth_msg, G5_URL);
+                }
             }
         ?>
 
