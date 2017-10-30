@@ -285,6 +285,12 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_CSS_URL.'/style.css">', 0
             <div class="naverpay-item"><?php echo $naverpay_request_js.$naverpay_button_js; ?></div>
             <?php } ?>
         </div>
+
+        <?php
+        // 상품태그
+        if ($it['it_tag']) include_once(G5_PLUGIN_PATH.'/minsupkr/shop-tag/boxitem.php');
+        ?>
+
     </section>
 </div>
 <div id="sit_sns">

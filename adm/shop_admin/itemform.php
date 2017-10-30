@@ -132,7 +132,7 @@ $pg_anchor ='<ul class="anchor">
 ';
 
 $frm_submit = '<div class="btn_confirm01 btn_confirm">
-    <input type="submit" value="확인" class="btn_submit" accesskey="s">
+    <input type="submit" value="확인" class="tag_submit btn_submit" accesskey="s">
     <a href="./itemlist.php?'.$qstr.'">목록</a>';
 if($it_id)
     $frm_submit .= PHP_EOL.'<a href="'.G5_SHOP_URL.'/item.php?it_id='.$it_id.'" class="btn_frmline">상품보기</a>';
@@ -314,6 +314,15 @@ if(!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false)
                 <label for="chk_ca_it_basic">분류적용</label>
                 <input type="checkbox" name="chk_all_it_basic" value="1" id="chk_all_it_basic">
                 <label for="chk_all_it_basic">전체적용</label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">태그</th>
+            <td colspan="2">
+                <?php if ($it['it_tag']) { ?><input type="hidden" name="it_tag_original" value="<?php echo $it['it_tag']; ?>"><?php } ?>
+                <ul class="co_tags" data-name="it_tag">
+                    <?php echo input_tags($it['it_tag']); ?>
+                </ul>
             </td>
         </tr>
         <tr>

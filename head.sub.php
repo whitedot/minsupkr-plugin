@@ -56,6 +56,10 @@ if($config['cf_add_meta'])
 if (defined('G5_IS_ADMIN')) {
     if(!defined('_THEME_PREVIEW_'))
         echo '<link rel="stylesheet" href="'.G5_ADMIN_URL.'/css/admin.css">'.PHP_EOL;
+
+    echo '<link rel="stylesheet" type="text/css" href="'.G5_PLUGIN_URL.'/jquery-ui/jquery-ui-1.9.2.custom.min.css">'.PHP_EOL;
+    echo '<link href="'.G5_PLUGIN_URL.'/tagit/tagit.css" rel="stylesheet" type="text/css">'.PHP_EOL;
+    echo '<link href="'.G5_PLUGIN_URL.'/minsupkr/shop-tag/css/tag-admin.css?ver='.G5_CSS_VER.'" rel="stylesheet" type="text/css">'.PHP_EOL;
 } else {
     $shop_css = '';
     if (defined('_SHOP_')) $shop_css = '_shop';
@@ -81,6 +85,13 @@ var g5_admin_url = "<?php echo G5_ADMIN_URL; ?>";
 <?php } ?>
 </script>
 <script src="<?php echo G5_JS_URL ?>/jquery-1.8.3.min.js"></script>
+<?php
+if (defined('G5_IS_ADMIN')) {
+    echo '<script src="'.G5_PLUGIN_URL.'/jquery-ui/jquery-ui-1.9.2.custom.min.js" type="text/javascript" charset="utf-8"></script>'.PHP_EOL;
+    echo '<script src="'.G5_PLUGIN_URL.'/tagit/tagit.min.js" type="text/javascript" charset="utf-8"></script>'.PHP_EOL;
+    echo '<script src="'.G5_PLUGIN_URL.'/minsupkr/shop-tag/js/tag.js?ver='.G5_JS_VER.'"></script>'.PHP_EOL;
+}
+?>
 <?php
 if (defined('_SHOP_')) {
     if(!G5_IS_MOBILE) {

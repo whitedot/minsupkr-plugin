@@ -160,6 +160,12 @@ var g5_shop_url = "<?php echo G5_SHOP_URL; ?>";
     <?php } ?>
 
     <?php
+    // 분류태그
+    $ca_tag = get_ca_tags($ca_id, $ca['ca_tag']);
+    if ($ca_tag) include_once(G5_PLUGIN_PATH.'/minsupkr/shop-tag/boxlist.php');
+    ?>
+
+    <?php
     // 하단 HTML
     echo '<div id="sct_thtml">'.conv_content($ca['ca_mobile_tail_html'], 1).'</div>';
     ?>

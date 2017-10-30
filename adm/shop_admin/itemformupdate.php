@@ -269,12 +269,16 @@ $it_name = strip_tags(trim($_POST['it_name']));
 if ($it_name == "")
     alert("상품명을 입력해 주십시오.");
 
+// 태그처리
+if ($it_tag) $it_tag .= ',';
+
 $sql_common = " ca_id               = '$ca_id',
                 ca_id2              = '$ca_id2',
                 ca_id3              = '$ca_id3',
                 it_skin             = '$it_skin',
                 it_mobile_skin      = '$it_mobile_skin',
                 it_name             = '$it_name',
+                it_tag             = '$it_tag',
                 it_maker            = '$it_maker',
                 it_origin           = '$it_origin',
                 it_brand            = '$it_brand',
@@ -400,6 +404,31 @@ else if ($w == "d")
 
 if ($w == "" || $w == "u")
 {
+    // 태그 처리
+    if ($it_tag != $it_tag_original) { // 원래 태그와 입력된 태그가 다를 때
+
+        $tag = '';
+        $extag = explode(',', $it_tag);
+        $extag_original = explode(',', $it_tag_original);
+
+        $extag_del = array_diff($extag_original, $extag);
+
+        // 증가
+        foreach($extag as $val) {
+            if ($val) {
+                add_tag($val, $extag_original);
+            }
+        }
+
+        // 감소
+        foreach($extag_del as $val) {
+            if ($val) {
+                del_tag($val);
+            }
+        }
+
+    }
+
     // 관련상품 등록
     $it_id2 = explode(",", $it_list);
     for ($i=0; $i<count($it_id2); $i++)

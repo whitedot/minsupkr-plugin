@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+/* Mobile 태그 스타일 */
+.co-tag {word-break:break-word}
+.co-tag .item {}
+.co-tag .a {display:inline-block;margin:0 4px 3px 0;padding:5px;border:1px solid #ddd;border-radius:7px;background:#fff;color:#0096ff;text-decoration:none;line-height:1em}
+.co-tag .a:hover {border-color:#0096ff;background:#0096ff;color:#fff}
+
+#tagall {padding:10px;line-height:2em}
+
+#tagbox {padding:10px 8px;text-align:left}
+
+#taglist {padding:10px}
+
+#tagitem {padding:30px 10px 10px}
