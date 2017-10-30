@@ -40,6 +40,9 @@ var g5_shop_url = "<?php echo G5_SHOP_URL; ?>";
         // 시작 레코드 구함
         $from_record = ($page - 1) * $items;
 
+        $costf = isset($_GET['costf']) ? preg_replace('/[^0-9]/', '', trim($_GET['costf'])) : ''; // 검색 하한가
+        $costt = isset($_GET['costt']) ? preg_replace('/[^0-9]/', '', trim($_GET['costt'])) : ''; // 검색 상한가
+
         $list = new item_list($skin_file, $default['de_tag_mobile_mod'], $default['de_tag_mobile_row'], $default['de_tag_mobile_width'], $default['de_tag_mobile_height']);
         $list->set_tag($tag);
         $list->set_is_page(true);
@@ -53,6 +56,8 @@ var g5_shop_url = "<?php echo G5_SHOP_URL; ?>";
         $list->set_view('it_cust_price', true);
         $list->set_view('it_price', true);
         $list->set_view('sns', true);
+        if ($costf) $list->set_costf($costf); // 검색 하한가
+        if ($costt) $list->set_costt($costt); // 검색 상한가
         echo $list->run();
 
         // where 된 전체 상품수
@@ -68,6 +73,7 @@ var g5_shop_url = "<?php echo G5_SHOP_URL; ?>";
     if($i > 0 && $total_count > $items) {
         $qstr1 .= 'tag='.$tag;
         $qstr1 .='&sort='.$sort.'&sortodr='.$sortodr;
+        if ($costf || $costt) $qstr1 .= '&amp;costf='.$costf.'&amp;costt='.$costt; // 검색 하한가, 상한가 _GET
         $ajax_url = G5_SHOP_URL.'/ajax.tag.list.php?'.$qstr1;
     ?>
     <div class="li_more">
