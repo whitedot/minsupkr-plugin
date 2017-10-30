@@ -34,8 +34,9 @@ if($od['od_pg'] == 'lg') {
         <?php
         $st_count1 = $st_count2 = 0;
         $custom_cancel = false;
+        $cancel_weit_price = 0;
 
-        $sql = " select it_id, it_name, cp_price, ct_send_cost, it_sc_type
+        $sql = " select it_id, it_name, cp_price, ct_send_cost, it_sc_type, it_weit
                     from {$g5['g5_shop_cart_table']}
                     where od_id = '$od_id'
                     group by it_id
@@ -64,6 +65,16 @@ if($od['od_pg'] == 'lg') {
                             where it_id = '{$row['it_id']}'
                               and od_id = '$od_id' ";
                 $sum = sql_fetch($sql);
+
+                // 취소, 품절, 환불 배송비 합계금액에서 제외
+                $sql = " select SUM(it_weit * ct_qty) as itweit, de_weit_g, de_weit_cost, de_weit_cost_add
+                            from {$g5['g5_shop_cart_table']}
+                            where it_id = '{$row['it_id']}'
+                              and od_id = '$od_id'
+                              and ct_status IN ( '취소', '반품', '품절' ) ";
+                $cancel_weit = sql_fetch($sql);
+                if ($cancel_weit['itweit'])
+                    $cancel_weit_price += get_weit_cost($cancel_weit['itweit'], $cancel_weit['de_weit_g'], $cancel_weit['de_weit_cost'], $cancel_weit['de_weit_cost_add']);
 
                 // 배송비
                 switch($row['ct_send_cost'])
@@ -105,7 +116,7 @@ if($od['od_pg'] == 'lg') {
                 <div class="li_prqty">
                     <span class="prqty_price li_prqty_sp"><span>판매가 </span><?php echo number_format($opt_price); ?></span>
                     <span class="prqty_qty li_prqty_sp"><span>수량 </span><?php echo number_format($opt['ct_qty']); ?></span>
-                    <span class="prqty_sc li_prqty_sp"><span>배송비 </span><?php echo $ct_send_cost; ?></span>
+                    <span class="prqty_sc li_prqty_sp"><span>무게 </span><?php echo get_weit($row['it_weit']); ?></span>
                     <span class="prqty_stat li_prqty_sp"><span>상태 </span><?php echo $opt['ct_status']; ?></span>
                 </div>
                 <div class="li_total" style="padding-left:<?php echo $image_width + 10; ?>px;height:auto !important;height:<?php echo $image_height; ?>px;min-height:<?php echo $image_height; ?>px">
@@ -153,10 +164,10 @@ if($od['od_pg'] == 'lg') {
         </div>
 
         <?php
-        // 총계 = 주문상품금액합계 + 배송비 - 상품할인 - 결제할인 - 배송비할인
-        $tot_price = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2']
+        // 총계 = 주문상품금액합계 + 배송비 - 상품할인 - 결제할인 - 배송비할인 + 무게배송비
+        $tot_price = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] + $od['od_weit_cost']
                         - $od['od_cart_coupon'] - $od['od_coupon'] - $od['od_send_coupon']
-                        - $od['od_cancel_price'];
+                        - $od['od_cancel_price'] - $cancel_weit_price;
         ?>
 
         <dl id="sod_bsk_tot">
@@ -186,6 +197,11 @@ if($od['od_pg'] == 'lg') {
             <?php if ($od['od_send_cost2'] > 0) { ?>
             <dt class="sod_bsk_dvr">추가배송비</dt>
             <dd class="sod_bsk_dvr"><strong><?php echo number_format($od['od_send_cost2']); ?> 원</strong></dd>
+            <?php } ?>
+
+            <?php if ($od['od_weit_cost'] > 0) { ?>
+            <dt class="sod_bsk_dvr">무게배송비</dt>
+            <dd class="sod_bsk_dvr"><strong><?php echo get_weit($od['od_weit']); ?> / <?php echo number_format($od['od_weit_cost']); ?>원</strong></dd>
             <?php } ?>
 
             <?php if ($od['od_cancel_price'] > 0) { ?>

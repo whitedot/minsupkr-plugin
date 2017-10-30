@@ -1533,17 +1533,29 @@ function get_order_info($od_id)
 
     $info = array();
 
+    // 장바구니 무게정보
+    $sql = " select SUM(it_weit * ct_qty) as itweit
+                from {$g5['g5_shop_cart_table']}
+                where od_id = '$od_id'
+                ";
+    $sum = sql_fetch($sql);
+    $weit_save = $sum['itweit'];
+
     // 장바구니 주문금액정보
     $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
                     SUM(cp_price) as coupon,
                     SUM( IF( ct_notax = 0, ( IF(io_type = 1, (io_price * ct_qty), ( (ct_price + io_price) * ct_qty) ) - cp_price ), 0 ) ) as tax_mny,
-                    SUM( IF( ct_notax = 1, ( IF(io_type = 1, (io_price * ct_qty), ( (ct_price + io_price) * ct_qty) ) - cp_price ), 0 ) ) as free_mny
+                    SUM( IF( ct_notax = 1, ( IF(io_type = 1, (io_price * ct_qty), ( (ct_price + io_price) * ct_qty) ) - cp_price ), 0 ) ) as free_mny,
+                    SUM(it_weit * ct_qty) as itweit,
+                    de_weit_g, de_weit_cost, de_weit_cost_add
                 from {$g5['g5_shop_cart_table']}
                 where od_id = '$od_id'
                   and ct_status IN ( '주문', '입금', '준비', '배송', '완료' ) ";
     $sum = sql_fetch($sql);
 
-    $cart_price = $sum['price'];
+    $weit_cost = get_weit_cost($sum['itweit'], $sum['de_weit_g'], $sum['de_weit_cost'], $sum['de_weit_cost_add']);
+
+    $cart_price = $sum['price'] + $weit_cost;
     $cart_coupon = $sum['coupon'];
 
     // 배송비
@@ -1616,14 +1628,14 @@ function get_order_info($od_id)
     $free_mny = $sum['free_mny'];
 
     if($od['od_tax_flag']) {
-        $tot_tax_mny = ( $tax_mny + $send_cost + $od['od_send_cost2'] )
+        $tot_tax_mny = ( $tax_mny + $send_cost + $od['od_send_cost2'] + $weit_cost )
                        - ( $od_coupon + $od_send_coupon + $od['od_receipt_point'] );
         if($tot_tax_mny < 0) {
             $free_mny += $tot_tax_mny;
             $tot_tax_mny = 0;
         }
     } else {
-        $tot_tax_mny = ( $tax_mny + $free_mny + $send_cost + $od['od_send_cost2'] )
+        $tot_tax_mny = ( $tax_mny + $free_mny + $send_cost + $od['od_send_cost2'] + $weit_cost )
                        - ( $od_coupon + $od_send_coupon + $od['od_receipt_point'] );
         $free_mny = 0;
     }
@@ -1633,12 +1645,17 @@ function get_order_info($od_id)
     $od_free_mny = $free_mny;
 
     // 장바구니 취소금액 정보
-    $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price
+    $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
+                SUM(it_weit * ct_qty) as itweit,
+                de_weit_g, de_weit_cost, de_weit_cost_add
                 from {$g5['g5_shop_cart_table']}
                 where od_id = '$od_id'
                   and ct_status IN ( '취소', '반품', '품절' ) ";
     $sum = sql_fetch($sql);
-    $cancel_price = $sum['price'];
+
+    $weit_cancel = $sum['itweit'];
+    $weit_cancel_price = get_weit_cancel_cost($weit_save, $weit_cancel, $sum['de_weit_g'], $sum['de_weit_cost'], $sum['de_weit_cost_add']);
+    $cancel_price = $sum['price'] + $weit_cancel_price;
 
     // 미수금액
     $od_misu = ( $cart_price + $send_cost + $od['od_send_cost2'] )
@@ -1651,6 +1668,8 @@ function get_order_info($od_id)
     // 결과처리
     $info['od_cart_price']      = $od_cart_price;
     $info['od_send_cost']       = $send_cost;
+    $info['od_weit']       = $weit_save - $weit_cancel;
+    $info['od_weit_cost']       = $weit_cost;
     $info['od_coupon']          = $od_coupon;
     $info['od_send_coupon']     = $od_send_coupon;
     $info['od_cart_coupon']     = $cart_coupon;

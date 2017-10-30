@@ -1131,6 +1131,21 @@ $(function(){
         </colgroup>
         <tbody>
             <tr>
+                <th scope="row"><label for="it_weit">상품무게</label></th>
+                <td>
+                    <?php
+                    echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다.<br>현재 무게배송비 ".$default['de_weit_g']."g / ".$default['de_weit_cost']."원 / ".$default['de_weit_cost_add']."원");
+                    ?>
+                    <input type="text" name="it_weit" value="<?php echo get_text($it['it_weit']); ?>" id="it_weit" class="frm_input" size="40"> g
+                </td>
+                <td class="td_grpset">
+                    <input type="checkbox" name="chk_ca_it_weit" value="1" id="chk_ca_it_weit">
+                    <label for="chk_ca_it_weit">분류적용</label>
+                    <input type="checkbox" name="chk_all_it_weit" value="1" id="chk_all_it_weit">
+                    <label for="chk_all_it_weit">전체적용</label>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row"><label for="it_sc_type">배송비 유형</label></th>
                 <td>
                     <?php echo help("배송비 유형을 선택하면 자동으로 항목이 변환됩니다."); ?>

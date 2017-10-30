@@ -378,7 +378,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
         <td headers="th_odrer" class="td_name"><?php echo $mb_nick; ?></td>
         <td headers="th_odrertel" class="td_tel"><?php echo get_text($row['od_tel']); ?></td>
         <td headers="th_recvr" class="td_name"><a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?sort1=<?php echo $sort1; ?>&amp;sort2=<?php echo $sort2; ?>&amp;sel_field=od_b_name&amp;search=<?php echo get_text($row['od_b_name']); ?>"><?php echo get_text($row['od_b_name']); ?></a></td>
-        <td rowspan="3" class="td_numsum"><?php echo number_format($row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2']); ?></td>
+        <td rowspan="3" class="td_numsum"><?php echo number_format($row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2'] + $row['od_weit_cost']); ?></td>
         <td rowspan="3" class="td_numincome"><?php echo number_format($row['od_receipt_price']); ?></td>
         <td rowspan="3" class="td_numcancel<?php echo $td_color; ?>"><?php echo number_format($row['od_cancel_price']); ?></td>
         <td rowspan="3" class="td_numcoupon"><?php echo number_format($row['couponprice']); ?></td>
@@ -433,7 +433,7 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
     </tr>
     <?php
         $tot_itemcount     += $row['od_cart_count'];
-        $tot_orderprice    += ($row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2']);
+        $tot_orderprice    += ($row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2'] + $row['od_weit_cost']);
         $tot_ordercancel   += $row['od_cancel_price'];
         $tot_receiptprice  += $row['od_receipt_price'];
         $tot_couponprice   += $row['couponprice'];

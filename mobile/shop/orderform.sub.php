@@ -41,13 +41,19 @@ ob_start();
                         a.ct_status,
                         a.ct_send_cost,
                         a.it_sc_type,
+                        SUM(a.it_weit * a.ct_qty) as itweit,
+                        a.de_weit_g,
+                        a.de_weit_cost,
+                        a.de_weit_cost_add,
                         b.ca_id,
                         b.ca_id2,
                         b.ca_id3,
                         b.it_notax
                    from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
                   where a.od_id = '$s_cart_id'
-                    and a.ct_select = '1' ";
+                    and a.ct_select = '1'
+                    and a.it_weit = b.it_weit
+                    ";
         $sql .= " group by a.it_id ";
         $sql .= " order by a.ct_id ";
         $result = sql_query($sql);
@@ -60,9 +66,13 @@ ob_start();
         $comm_vat_mny = 0; // 부가세
         $comm_free_mny = 0; // 면세금액
         $tot_tax_mny = 0;
+        $tot_weit = 0; // 무게합
+        $tot_weit_cost = 0; // 무게배송비합
 
         for ($i=0; $row=sql_fetch_array($result); $i++)
         {
+            $chk_weit = chk_weit_default($row['it_name'], $row['de_weit_g'], $row['de_weit_cost'], $row['de_weit_cost_add']);
+
             // 합계금액 계산
             $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
                             SUM(ct_point * ct_qty) as point,
@@ -168,6 +178,8 @@ ob_start();
                 if($sendcost == 0)
                     $ct_send_cost = '무료';
             }
+
+            $tot_weit += $row['itweit'];
         ?>
 
         <li class="sod_li">
@@ -188,7 +200,7 @@ ob_start();
             <div class="li_prqty">
                 <span class="prqty_price li_prqty_sp"><span>판매가 </span><?php echo number_format($row['ct_price']); ?></span>
                 <span class="prqty_qty li_prqty_sp"><span>수량 </span><?php echo number_format($sum['qty']); ?></span>
-                <span class="prqty_sc li_prqty_sp"><span>배송비 </span><?php echo $ct_send_cost; ?></span>
+                <span class="prqty_sc li_prqty_sp"><span>무게 </span><?php echo get_weit($row['it_weit']); ?></span>
             </div>
             <div class="li_total">
                 <span class="total_price total_span"><span>주문금액 </span><strong><?php echo number_format($sell_price); ?></strong></span>
@@ -220,6 +232,12 @@ ob_start();
 
     <?php if ($goods_count) $goods .= ' 외 '.$goods_count.'건'; ?>
 
+    <?php
+    // 무게배송비 합
+    if ($tot_weit > 0)
+        $tot_weit_cost = get_weit_cost($tot_weit, $default['de_weit_g'], $default['de_weit_cost'], $default['de_weit_cost_add']);
+    ?>
+
     <dl id="sod_bsk_tot">
         <dt class="sod_bsk_sell">주문</dt>
         <dd class="sod_bsk_sell"><strong><?php echo number_format($tot_sell_price); ?> 원</strong></dd>
@@ -229,9 +247,11 @@ ob_start();
         <?php } ?>
         <dt class="sod_bsk_dvr">배송비</dt>
         <dd class="sod_bsk_dvr"><strong><?php echo number_format($send_cost); ?> 원</strong></dd>
+        <dt class="sod_bsk_dvr">무게배송비</dt>
+        <dd class="sod_bsk_dvr"><strong><?php echo get_weit($tot_weit); ?> / <?php echo number_format($tot_weit_cost); ?> 원</strong></dd>
         <dt class="sod_bsk_cnt">총계</dt>
         <dd class="sod_bsk_cnt">
-            <?php $tot_price = $tot_sell_price + $send_cost; // 총계 = 주문상품금액합계 + 배송비 ?>
+            <?php $tot_price = $tot_sell_price + $send_cost + $tot_weit_cost; // 총계 = 주문상품금액합계 + 배송비 + 무게배송비 ?>
             <strong id="ct_tot_price"><?php echo number_format($tot_price); ?> 원</strong>
         </dd>
         <dt class="sod_bsk_point">포인트</dt>
@@ -263,6 +283,8 @@ if($is_kakaopay_use) {
     <input type="hidden" name="org_od_price"    value="<?php echo $tot_sell_price; ?>">
     <input type="hidden" name="od_send_cost" value="<?php echo $send_cost; ?>">
     <input type="hidden" name="od_send_cost2" value="0">
+    <input type="hidden" name="od_weit" value="<?php echo $tot_weit; ?>">
+    <input type="hidden" name="od_weit_cost" value="<?php echo $tot_weit_cost; ?>">
     <input type="hidden" name="item_coupon" value="0">
     <input type="hidden" name="od_coupon" value="0">
     <input type="hidden" name="od_send_coupon" value="0">
@@ -1029,6 +1051,7 @@ function calculate_total_price()
     var it_price, cp_price, it_notax;
     var tot_mny = comm_tax_mny = comm_vat_mny = comm_free_mny = tax_mny = vat_mny = 0;
     var send_cost = parseInt($("input[name=od_send_cost]").val());
+    var weit_cost = parseInt($("input[name=od_weit_cost]").val());
 
     $it_prc.each(function(index) {
         it_price = parseInt($(this).val());
@@ -1037,7 +1060,7 @@ function calculate_total_price()
         tot_cp_price += cp_price;
     });
 
-    tot_sell_price = sell_price - tot_cp_price + send_cost;
+    tot_sell_price = sell_price - tot_cp_price + send_cost + weit_cost;
 
     $("#ct_tot_coupon").text(number_format(String(tot_cp_price))+" 원");
     $("#ct_tot_price").text(number_format(String(tot_sell_price))+" 원");
@@ -1076,7 +1099,8 @@ function calculate_order_price()
     var send_cost = parseInt($("input[name=od_send_cost]").val());
     var send_cost2 = parseInt($("input[name=od_send_cost2]").val());
     var send_coupon = parseInt($("input[name=od_send_coupon]").val());
-    var tot_price = sell_price + send_cost + send_cost2 - send_coupon;
+    var weit_cost = parseInt($("input[name=od_weit_cost]").val());
+    var tot_price = sell_price + send_cost + send_cost2 - send_coupon + weit_cost;
 
     $("form[name=sm_form] input[name=good_mny]").val(tot_price);
     $("#od_tot_price").text(number_format(String(tot_price)));
@@ -1130,6 +1154,7 @@ function calculate_tax()
     var tot_mny = comm_free_mny = tax_mny = vat_mny = 0;
     var send_cost = parseInt($("input[name=od_send_cost]").val());
     var send_cost2 = parseInt($("input[name=od_send_cost2]").val());
+    var weit_cost = parseInt($("input[name=od_weit_cost]").val());
     var od_coupon = parseInt($("input[name=od_coupon]").val());
     var send_coupon = parseInt($("input[name=od_send_coupon]").val());
     var temp_point = 0;
@@ -1150,7 +1175,7 @@ function calculate_tax()
     if($("input[name=od_temp_point]").size())
         temp_point = parseInt($("input[name=od_temp_point]").val());
 
-    tot_mny += (send_cost + send_cost2 - od_coupon - send_coupon - temp_point);
+    tot_mny += (send_cost + send_cost2 + weit_cost - od_coupon - send_coupon - temp_point);
     if(tot_mny < 0) {
         comm_free_mny = comm_free_mny + tot_mny;
         tot_mny = 0;
@@ -1193,7 +1218,8 @@ function pay_approval()
         var send_cost = parseInt(pf.od_send_cost.value);
         var send_cost2 = parseInt(pf.od_send_cost2.value);
         var send_coupon = parseInt(pf.od_send_coupon.value);
-        f.good_mny.value = od_price + send_cost + send_cost2 - send_coupon - temp_point;
+        var weit_cost = parseInt(pf.od_weit_cost.value);
+        f.good_mny.value = od_price + send_cost + send_cost2 - send_coupon - temp_point + weit_cost;
     }
 
     // 카카오페이 지불
@@ -1439,6 +1465,7 @@ function payment_check(f)
     var send_cost = parseInt(f.od_send_cost.value);
     var send_cost2 = parseInt(f.od_send_cost2.value);
     var send_coupon = parseInt(f.od_send_coupon.value);
+    var weit_cost = parseInt(f.od_weit_cost.value);
     temp_point = 0;
 
     if (typeof(f.max_temp_point) != "undefined")
@@ -1482,7 +1509,7 @@ function payment_check(f)
         }
     }
 
-    var tot_price = od_price + send_cost + send_cost2 - send_coupon - temp_point;
+    var tot_price = od_price + send_cost + send_cost2 - send_coupon - temp_point + weit_cost;
 
     if (document.getElementById("od_settle_iche")) {
         if (document.getElementById("od_settle_iche").checked) {

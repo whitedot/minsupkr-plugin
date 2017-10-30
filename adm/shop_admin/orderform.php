@@ -137,6 +137,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             <th scope="col">상태</th>
             <th scope="col">수량</th>
             <th scope="col">판매가</th>
+            <th scope="col">무게</th>
             <th scope="col">소계</th>
             <th scope="col">쿠폰</th>
             <th scope="col">포인트</th>
@@ -153,7 +154,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             $image = get_it_image($row['it_id'], 50, 50);
 
             // 상품의 옵션정보
-            $sql = " select ct_id, it_id, ct_price, ct_point, ct_qty, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, io_type, io_price
+            $sql = " select ct_id, it_id, it_weit, ct_price, ct_point, ct_qty, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, io_type, io_price
                         from {$g5['g5_shop_cart_table']}
                         where od_id = '{$od['od_id']}'
                           and it_id = '{$row['it_id']}'
@@ -224,6 +225,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <input type="text" name="ct_qty[<?php echo $chk_cnt; ?>]" id="ct_qty_<?php echo $chk_cnt; ?>" value="<?php echo $opt['ct_qty']; ?>" required class="frm_input required" size="5">
                 </td>
                 <td class="td_num"><?php echo number_format($opt_price); ?></td>
+                <td class="td_num"><?php echo number_format($opt['it_weit'] * $opt['ct_qty']); ?>g</td>
                 <td class="td_num"><?php echo number_format($ct_price['stotal']); ?></td>
                 <td class="td_num"><?php echo number_format($opt['cp_price']); ?></td>
                 <td class="td_num"><?php echo number_format($ct_point['stotal']); ?></td>
@@ -333,7 +335,9 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             <th scope="col">주문번호</th>
             <th scope="col">결제방법</th>
             <th scope="col">주문총액</th>
+            <th scope="col">총무게</th>
             <th scope="col">배송비</th>
+            <th scope="col">무게배송비</th>
             <th scope="col">포인트결제</th>
             <th scope="col">총결제액</th>
             <th scope="col">쿠폰</th>
@@ -345,7 +349,9 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             <td><?php echo $od['od_id']; ?></td>
             <td class="td_paybybig"><?php echo $s_receipt_way; ?></td>
             <td class="td_numbig td_numsum"><?php echo display_price($amount['order']); ?></td>
+            <td class="td_numbig"><?php echo number_format($od['od_weit']); ?> g</td>
             <td class="td_numbig"><?php echo display_price($od['od_send_cost'] + $od['od_send_cost2']); ?></td>
+            <td class="td_numbig"><?php echo display_price($od['od_weit_cost']); ?></td>
             <td class="td_numbig"><?php echo display_point($od['od_receipt_point']); ?></td>
             <td class="td_numbig td_numincome"><?php echo number_format($amount['receipt']); ?>원</td>
             <td class="td_numbig td_numcoupon"><?php echo display_price($amount['coupon']); ?></td>
@@ -586,6 +592,12 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <th scope="row"><label for="od_send_cost2">추가배송비</label></th>
                     <td>
                         <input type="text" name="od_send_cost2" value="<?php echo $od['od_send_cost2']; ?>" id="od_send_cost2" class="frm_input" size="10"> 원
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="od_weit_cost">무게배송비</label></th>
+                    <td>
+                        <input type="text" name="od_weit_cost" value="<?php echo $od['od_weit_cost']; ?>" id="od_weit_cost" class="frm_input" size="10"> 원
                     </td>
                 </tr>
                 <?php

@@ -177,6 +177,14 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_CSS_URL.'/style.css">', 0
                 <th><?php echo $ct_send_cost_label; ?></th>
                 <td><?php echo $sc_method; ?></td>
             </tr>
+
+            <?php if ($it['it_weit']) { ?>
+            <tr>
+                <th>무게</th>
+                <td><?php echo get_weit($it['it_weit']); ?></td>
+            </tr>
+            <?php } ?>
+
             <?php if($it['it_buy_min_qty']) { ?>
             <tr>
                 <th>최소구매수량</th>

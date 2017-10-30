@@ -24,6 +24,7 @@ $sql = " select a.ct_id,
                 a.ct_status,
                 a.ct_send_cost,
                 a.it_sc_type,
+                a.it_weit,
                 b.ca_id
            from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
           where a.od_id = '$s_cart_id' ";
@@ -53,13 +54,15 @@ $cart_count = sql_num_rows($result);
         $tot_point = 0;
         $tot_sell_price = 0;
         $it_send_cost = 0;
+        $tot_weit = 0;
 
         for ($i=0; $row=sql_fetch_array($result); $i++)
         {
             // 합계금액 계산
             $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
                             SUM(ct_point * ct_qty) as point,
-                            SUM(ct_qty) as qty
+                            SUM(ct_qty) as qty,
+                            SUM(it_weit * ct_qty) as itweit
                         from {$g5['g5_shop_cart_table']}
                         where it_id = '{$row['it_id']}'
                           and od_id = '$s_cart_id' ";
@@ -106,6 +109,7 @@ $cart_count = sql_num_rows($result);
 
             $point      = $sum['point'];
             $sell_price = $sum['price'];
+            $tot_weit += $sum['itweit'];
         ?>
 
         <li class="sod_li">
@@ -147,13 +151,20 @@ $cart_count = sql_num_rows($result);
     </ul>
 
     <?php
-    $tot_price = $tot_sell_price + $send_cost; // 총계 = 주문상품금액합계 + 배송비
-    if ($tot_price > 0 || $send_cost > 0) {
+    $tot_weit_cost = get_weit_cost($tot_weit, $default['de_weit_g'], $default['de_weit_cost'], $default['de_weit_cost_add']);
+    $tot_price = $tot_sell_price + $send_cost + $tot_weit_cost; // 총계 = 주문상품금액합계 + 배송비
+
+    if ($tot_price > 0 || $send_cost > 0 || $tot_weit_cost) {
     ?>
     <dl id="sod_bsk_tot">
         <?php if ($send_cost > 0) { // 배송비가 0 보다 크다면 (있다면) ?>
         <dt class="sod_bsk_dvr">배송비</dt>
         <dd class="sod_bsk_dvr"><strong><?php echo number_format($send_cost); ?> 원</strong></dd>
+        <?php } ?>
+
+        <?php if ($tot_weit_cost > 0) { // 무게배송비가 0 보다 크다면 (있다면) ?>
+        <dt class="sod_bsk_dvr">무게배송비</dt>
+        <dd class="sod_bsk_dvr"><strong><?php echo get_weit($tot_weit); ?> / <?php echo number_format($tot_weit_cost); ?> 원</strong></dd>
         <?php } ?>
 
         <?php if ($tot_price > 0) { ?>

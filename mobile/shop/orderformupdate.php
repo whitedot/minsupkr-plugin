@@ -79,6 +79,7 @@ $i_price     = (int)$_POST['od_price'];
 $i_send_cost  = (int)$_POST['od_send_cost'];
 $i_send_cost2  = (int)$_POST['od_send_cost2'];
 $i_send_coupon  = (int)$_POST['od_send_coupon'];
+$i_weit_cost  = (int)$_POST['od_weit_cost'];
 $i_temp_point = (int)$_POST['od_temp_point'];
 
 
@@ -288,8 +289,17 @@ if ($od_temp_point)
         alert('회원님의 포인트가 부족하여 포인트로 결제 할 수 없습니다.', $page_return_url);
 }
 
-$i_price = $i_price + $i_send_cost + $i_send_cost2 - $i_temp_point - $i_send_coupon;
-$order_price = $tot_od_price + $send_cost + $send_cost2 - $tot_sc_cp_price - $od_temp_point;
+// 무게배송비가 상이함
+if ($_POST['od_weit'] > 0) {
+    $weit_cost = get_weit_cost_cart($tmp_cart_id);
+
+    if ((int)$weit_cost !== (int)$i_weit_cost) {
+        die("무게배송비 오류");
+    }
+}
+
+$i_price = $i_price + $i_send_cost + $i_send_cost2 + $i_weit_cost - $i_temp_point - $i_send_coupon;
+$order_price = $tot_od_price + $send_cost + $send_cost2 + $weit_cost - $tot_sc_cp_price - $od_temp_point;
 
 $od_status = '주문';
 $od_tno    = '';
@@ -599,7 +609,12 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_mobile         = '1',
                 od_ip             = '$REMOTE_ADDR',
                 od_settle_case    = '$od_settle_case',
-                od_test           = '{$default['de_card_test']}'
+                od_test           = '{$default['de_card_test']}',
+                od_weit = '$od_weit',
+                od_weit_cost = '$od_weit_cost',
+                de_weit_g = '{$default['de_weit_g']}',
+                de_weit_cost = '{$default['de_weit_cost']}',
+                de_weit_cost_add = '{$default['de_weit_cost_add']}'
                 ";
 $result = sql_query($sql, false);
 
