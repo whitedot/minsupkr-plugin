@@ -119,6 +119,7 @@ if(!sql_query(" select ec_mall_pid from {$g5['g5_shop_item_table']} limit 1 ", f
 $pg_anchor ='<ul class="anchor">
 <li><a href="#anc_sitfrm_cate">상품분류</a></li>
 <li><a href="#anc_sitfrm_skin">스킨설정</a></li>
+<li><a href="#anc_sitfrm_auth">구매회원지정</a></li>
 <li><a href="#anc_sitfrm_ini">기본정보</a></li>
 <li><a href="#anc_sitfrm_compact">요약정보</a></li>
 <li><a href="#anc_sitfrm_cost">가격 및 재고</a></li>
@@ -265,6 +266,33 @@ if(!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false)
 </section>
 
 <?php echo $frm_submit; ?>
+
+<section id="anc_sitfrm_auth">
+    <h2 class="h2_frm">구매회원지정</h2>
+    <?php echo $pg_anchor; ?>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>구매회원정보 입력</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row">구매회원</th>
+            <td>
+                <?php echo help('회원아이디를 입력하시면 해당 회원만 이 상품을 구매할 수 있습니다. 콤마(,)로 구분하여 여러아이디를 지정할 수 있습니다.'); ?>
+                <input type="text" name="it_auth" value="<?php echo $it['it_auth']; ?>" class="frm_input" size="100">
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<?php echo $frm_submit; ?>
+
 
 <section id="anc_sitfrm_ini">
     <h2 class="h2_frm">기본정보</h2>

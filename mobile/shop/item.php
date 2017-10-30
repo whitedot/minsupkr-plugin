@@ -124,6 +124,16 @@ $is_orderable = true;
 if(!$it['it_use'] || $it['it_tel_inq'] || $is_soldout)
     $is_orderable = false;
 
+// 상품 구매가능 회원 검사
+if ($it['it_auth']) {
+    if ($is_member) {
+        $is_order = get_item_auth($member['mb_id'], $it['it_auth']);
+        if ($is_order == 0) $is_orderable = false;
+    } else {
+        $is_orderable = false;
+    }
+}
+
 if($is_orderable) {
     // 선택 옵션
     $option_item = get_item_options($it['it_id'], $it['it_option_subject']);

@@ -53,6 +53,7 @@ if($is_kakaopay_use) {
                         a.de_weit_g,
                         a.de_weit_cost,
                         a.de_weit_cost_add,
+                        a.it_auth,
                         b.ca_id,
                         b.ca_id2,
                         b.ca_id3,
@@ -184,6 +185,16 @@ if($is_kakaopay_use) {
             }
 
             $tot_weit += $row['itweit'];
+
+            // 상품 구매가능 회원 검사
+            if ($row['it_auth']) {
+                $auth_msg = '주문 불가능한 상품이 포함되어 있습니다.';
+                if (!$is_member) alert($auth_msg, G5_URL);
+                else {
+                    $auth_check = get_item_auth($member['mb_id'], $row['it_auth']);
+                    if ($auth_check == false) alert($auth_msg, G5_URL);
+                }
+            }
         ?>
 
         <tr>
