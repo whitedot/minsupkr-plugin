@@ -268,6 +268,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_SHOP_CSS_URL.'/style.css">', 0
                     <input type="hidden" name="io_value[<?php echo $it_id; ?>][]" value="<?php echo $it['it_name']; ?>">
                     <input type="hidden" class="io_price" value="0">
                     <input type="hidden" class="io_stock" value="<?php echo $it['it_stock_qty']; ?>">
+                    <input type="hidden" name="io_weit[<?php echo $it_id; ?>][]" value="<?php echo $it['it_weit']; ?>">
+                    <input type="hidden" name="de_weit_g[<?php echo $it_id; ?>][]" value="<?php echo $default['de_weit_g']; ?>">
+                    <input type="hidden" name="de_weit_cost[<?php echo $it_id; ?>][]" value="<?php echo $default['de_weit_cost']; ?>">
+                    <input type="hidden" name="de_weit_cost_add[<?php echo $it_id; ?>][]" value="<?php echo $default['de_weit_cost_add']; ?>">
                     <span class="sit_opt_subj"><?php echo $it['it_name']; ?></span>
                     <span class="sit_opt_prc">(+0원)</span>
                     <div>
