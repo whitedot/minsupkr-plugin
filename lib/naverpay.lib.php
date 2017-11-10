@@ -14,6 +14,16 @@ class naverpay_register
         $this->send_cost = $send_cost;
     }
 
+    function get_weit_cost($weit, $g, $cost, $cost_add) {
+        $val = $weit / $g;
+        $val = ceil($val);
+
+        if ($val > 1) $price = $cost + $cost_add * ($val - 1);
+        else $price = $cost * $val;
+
+        return $price;
+    }
+
     function get_sendcost()
     {
         global $g5, $default;
@@ -99,6 +109,11 @@ class naverpay_register
         }
 
         $cost += $diff_cost;
+
+        $weit_cal = $opt['weit'] * $opt['qty'];
+        $weit_cost = get_weit_cost($weit_cal, $opt['weit_g'], $opt['weit_cost'], $opt['weit_cost_add']);
+
+        $cost += $weit_cost;
 
         // 모두 착불상품이면
         if(count($keys) == $cnt && $cnt > 0)
