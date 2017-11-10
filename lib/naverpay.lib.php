@@ -14,16 +14,6 @@ class naverpay_register
         $this->send_cost = $send_cost;
     }
 
-    function get_weit_cost($weit, $g, $cost, $cost_add) {
-        $val = $weit / $g;
-        $val = ceil($val);
-
-        if ($val > 1) $price = $cost + $cost_add * ($val - 1);
-        else $price = $cost * $val;
-
-        return $price;
-    }
-
     function get_sendcost()
     {
         global $g5, $default;
