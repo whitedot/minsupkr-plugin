@@ -35,8 +35,12 @@ function add_tag($tag, $extag) {
 
     $sql = " select tag_id from {$g5['g5_shop_item_tag_table']} where tag_name = '{$tag}' ";
     $result = sql_fetch($sql);
+
     if ($result['tag_id']) {
-        if (!in_array($tag, $extag)) {
+        if ($extag && !in_array($tag, $extag)) {
+            $sql = " update {$g5['g5_shop_item_tag_table']} set tag_cnt = tag_cnt + 1 where tag_id = '{$result['tag_id']}' ";
+            sql_query($sql);
+        } else {
             $sql = " update {$g5['g5_shop_item_tag_table']} set tag_cnt = tag_cnt + 1 where tag_id = '{$result['tag_id']}' ";
             sql_query($sql);
         }
